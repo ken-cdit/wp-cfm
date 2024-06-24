@@ -18,7 +18,7 @@ class WPCFM_Readwrite {
 			if ( ! wp_mkdir_p( $this->folder ) ) {
 				$this->error = __( 'Create ' . $this->folder . ' and grant write access', 'wp-cfm' );
 			}
-		} elseif ( ! is_writable( $this->folder ) ) {
+		} elseif ( ! is_writable( $this->folder ) && ( WPCFM_DISABLE_PUSH !== true ) ) {
 			$this->error = __( 'The ' . $this->folder . ' folder is not writable', 'wp-cfm' );
 		}
 	}

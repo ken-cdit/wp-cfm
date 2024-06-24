@@ -93,7 +93,7 @@ class WPCFM_Ajax {
 	 * Push settings to filesystem
 	 */
 	public function push_settings() {
-		if ( current_user_can( 'manage_options' ) && check_ajax_referer( 'wpcfm_ajax_nonce' ) ) {
+		if ( current_user_can( 'manage_options' ) && WPCFM_DISABLE_PUSH !== true && check_ajax_referer( 'wpcfm_ajax_nonce' ) ) {
 			$bundle_name = stripslashes( $_POST['data']['bundle_name'] );
 			WPCFM()->readwrite->push_bundle( $bundle_name );
 			wp_send_json(

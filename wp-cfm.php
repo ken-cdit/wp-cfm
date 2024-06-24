@@ -92,6 +92,9 @@ class WPCFM_Core {
 		define( 'WPCFM_CONFIG_USE_YAML_DIFF', apply_filters( 'wpcfm_config_use_yaml_diff', true ) );
 		define( 'WPCFM_URL', plugins_url( '', __FILE__ ) );
 
+		define( 'WPCFM_DISABLE_PUSH', apply_filters( 'wpcfm_disable_push', false));
+		define( 'WPCFM_HIDE_ATTRIBUTION', apply_filters( ' wpcfm_hide_attribution', false));
+
 		// WP is loaded
 		add_action( 'init', array( $this, 'init' ), 1 );
 	}
@@ -228,11 +231,52 @@ class WPCFM_Core {
 		}
 	}
 
+	private function register_admin_notices() {
+		$add_notice = function($message, $type) {
+			add_action( 'admin_notices', function() use ($message, $type) {
+				echo '<div class="notice notice-' . $type . '"><p>' . $message . '</p></div>';
+			} );
+		};
+
+		// check read/write errors
+		if ( ! empty( $this->readwrite->error) ) {
+			$add_notice($this->readwrite->error, 'error');
+		}
+
+		if( WPCFM_DISABLE_PUSH === true ) {
+			$add_notice("Push functionality is explicitly disabled for this environment.", 'info');
+		}
+
+		// check version compatability with yaml format
+		if ( defined( 'WPCFM_CONFIG_FORMAT_REQUESTED' ) && in_array( WPCFM_CONFIG_FORMAT_REQUESTED, array( 'yml', 'yaml' ) ) ) {
+			$add_notice("Your PHP version is not compatible with Yaml export format. Upgrade to at least PHP 5.6.4.", 'error');
+		}
+
+		// build warnings for duplicates
+		$options_by_bundles = [];
+
+		foreach($this->registry->get_duplicates() as $option => $bundles) {
+			$bundles_key = implode(', ', $bundles);
+			if(!array_key_exists($bundles_key, $options_by_bundles)) {
+				$options_by_bundles[$bundles_key] = [];
+			}
+			$options_by_bundles[$bundles_key][] = $option;
+		}
+
+		foreach($options_by_bundles as $bundles => $options) {
+			$add_notice(
+				"Some config items are tracked by multiple bundles and may result in unwanted side effects.</br></br>\n"
+				. "<b>Bundles:</b> $bundles</br>\n"
+				. "<b>Items:</b> " . implode(', ', $options)
+			, 'warning');
+		}
+	}
 
 	/**
 	 * Register the settings page
 	 */
 	function admin_menu() {
+		$this->register_admin_notices();
 		add_options_page( 'WP-CFM', 'WP-CFM', 'manage_options', 'wpcfm', array( $this, 'settings_page' ) );
 	}
 
@@ -241,6 +285,7 @@ class WPCFM_Core {
 	 * Register the multi-site settings page
 	 */
 	function network_admin_menu() {
+		$this->register_admin_notices();
 		add_submenu_page( 'settings.php', 'WP-CFM', 'WP-CFM', 'manage_options', 'wpcfm', array( $this, 'settings_page' ) );
 	}
 
@@ -325,6 +370,14 @@ class WPCFM_Core {
 			array( '&#39;', '&#34;' ),
 			$str
 		);
+	}
+
+	public function is_push_disabled() {
+		return WPCFM_DISABLE_PUSH;
+	}
+
+	public function is_attribution_hidden() {
+		return WPCFM_HIDE_ATTRIBUTION;
 	}
 }
 

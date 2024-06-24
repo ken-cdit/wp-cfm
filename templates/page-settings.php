@@ -27,25 +27,6 @@ $configuration = $this->helper->group_items( $configuration );
 	</div>
 <?php endif; ?>
 
-<?php if ( defined( 'WPCFM_CONFIG_FORMAT_REQUESTED' ) && in_array( WPCFM_CONFIG_FORMAT_REQUESTED, array( 'yml', 'yaml' ) ) ) : ?>
-<div class="wpcfm-error">Your PHP version is not compatible with Yaml export format. Upgrade to at least PHP 5.6.4.</div>
-<?php endif; ?>
-
-<?php if ( ! empty( $this->readwrite->error ) ) : ?>
-	<div class="wpcfm-error"><?php echo $this->readwrite->error; ?></div>
-<?php endif; ?>
-
-<div class="wpcfm-warnings">
-	<?php foreach ( $this->registry->get_duplicates() as $option => $bundles ) : ?>
-		<div class="wpcfm-warning">
-			<?php _e( 'Warning: ', 'wp-cfm' ); ?>
-			<?php echo( $option ); ?>
-			<?php _e( 'is tracked by multiple bundles: ', 'wp-cfm' ); ?>
-			<?php echo( implode( ', ', $bundles ) ); ?>
-		</div>
-	<?php endforeach; ?>
-</div>
-
 <div class="wpcfm-bundles">
 	<div class="wpcfm-action-buttons">
 		<div style="float:right">
@@ -60,7 +41,9 @@ $configuration = $this->helper->group_items( $configuration );
 		<div class="bundle-header">
 			<div class="bundle-actions">
 				<a class="button diff-bundle" title="Compare differences"><?php _e( 'Diff', 'wp-cfm' ); ?></a> &nbsp;
+				<?php if ( ! $this->is_push_disabled() ): ?>
 				<a class="button push-bundle" title="Write database changes to the filesystem"><?php _e( 'Push', 'wp-cfm' ); ?></a> &nbsp;
+				<?php endif ?>
 				<a class="button pull-bundle" title="Import file changes into the database"><?php _e( 'Pull', 'wp-cfm' ); ?></a>
 			</div>
 			<div class="bundle-toggle">All Bundles</div>
@@ -69,9 +52,11 @@ $configuration = $this->helper->group_items( $configuration );
 	</div>
 </div>
 
+<?php if ( defined( 'WPCFM_HIDE_ATTRIBUTION' ) && WPCFM_HIDE_ATTRIBUTION === true ): ?>
 <div class="attribution">
 	Created by <a href="http://forumone.com/" target="_blank">Forum One</a>
 </div>
+<?php endif ?>
 
 <!-- clone settings -->
 
@@ -81,7 +66,9 @@ $configuration = $this->helper->group_items( $configuration );
 			<div class="bundle-actions">
 				<span class="no-actions">Save to see actions</span>
 				<a class="button diff-bundle" title="Compare differences"><?php _e( 'Diff', 'wp-cfm' ); ?></a> &nbsp;
+				<?php if ( ! $this->is_push_disabled() ): ?>
 				<a class="button push-bundle disabled" title="Write database changes to the filesystem"><?php _e( 'Push', 'wp-cfm' ); ?></a> &nbsp;
+				<?php endif ?>
 				<a class="button pull-bundle disabled" title="Import file changes into the database"><?php _e( 'Pull', 'wp-cfm' ); ?></a>
 			</div>
 			<div class="bundle-toggle">New bundle</div>

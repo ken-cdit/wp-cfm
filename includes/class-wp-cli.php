@@ -29,6 +29,10 @@ class WPCFM_CLI_Command extends WP_CLI_Command {
 			WPCFM()->options->is_network = true;
 		}
 
+		if ( WPCFM_DISABLE_PUSH === true ) {
+			WP_CLI::error( "Pushing bundles is explicitly disabled for this environment." );
+		}
+
 		WPCFM()->readwrite->push_bundle( $args[0] );
 		WP_CLI::success( 'The bundle has been written to file.' );
 	}
