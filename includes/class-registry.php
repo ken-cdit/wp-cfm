@@ -47,6 +47,8 @@ class WPCFM_Registry {
 	/**
 	 * Ignore certain configuration settings
 	 *
+	 * The list of items can be amended via the 'wpcfm_ignored_items' hook.
+	 *
 	 * @since 1.0.0
 	 */
 	function disallowed_items( $items ) {
@@ -67,6 +69,10 @@ class WPCFM_Registry {
 
 		foreach ( $disallowed_items as $row ) {
 			unset( $items[ $row ] );
+		}
+
+		foreach ( WPCFM_IGNORED_ITEMS as $item ) {
+			unset( $items[ $item ]);
 		}
 
 		return $items;

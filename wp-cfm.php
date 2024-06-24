@@ -94,6 +94,7 @@ class WPCFM_Core {
 
 		define( 'WPCFM_DISABLE_PUSH', apply_filters( 'wpcfm_disable_push', false));
 		define( 'WPCFM_HIDE_ATTRIBUTION', apply_filters( ' wpcfm_hide_attribution', false));
+		define( 'WPCFM_IGNORED_ITEMS', apply_filters( 'wpcfm_ignored_items', [] ));
 
 		// WP is loaded
 		add_action( 'init', array( $this, 'init' ), 1 );
@@ -245,6 +246,12 @@ class WPCFM_Core {
 
 		if( WPCFM_DISABLE_PUSH === true ) {
 			$add_notice("Push functionality is explicitly disabled for this environment.", 'info');
+		}
+
+		if( defined('WPCFM_IGNORED_ITEMS') && ! empty( WPCFM_IGNORED_ITEMS )) {
+			$ignored_items = implode(', ', WPCFM_IGNORED_ITEMS);
+			$add_notice("The following config items are being explicitly blocked by configuration via 'wpcfm_ignored_items' hook:</br>\n"
+				. "<div style=\"margin:4px 6px;\">$ignored_items</div>", 'info');
 		}
 
 		// check version compatability with yaml format
