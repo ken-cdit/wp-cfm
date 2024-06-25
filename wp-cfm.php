@@ -244,7 +244,7 @@ class WPCFM_Core {
 			} );
 		};
 
-		if ( ! ( 'options-general.php' === $GLOBALS['pagenow'] && $_REQUEST['page'] == 'wpcfm' ) ) {
+		if ( ! ( 'options-general.php' === $GLOBALS['pagenow'] && isset($_REQUEST['page']) && $_REQUEST['page'] == 'wpcfm' ) ) {
 			return;
 		}
 
