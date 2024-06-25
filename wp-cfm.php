@@ -36,6 +36,7 @@ class WPCFM_Core {
 
 	const VERSION = '1.7.10';
 	public $readwrite;
+	public $readwrite_overrides;
 	public $registry;
 	public $options;
 	public $helper;
@@ -51,6 +52,7 @@ class WPCFM_Core {
 
 		$config_dir = WP_CONTENT_DIR . '/config';
 		$config_url = WP_CONTENT_URL . '/config';
+		$overrides_dir = false;
 
 		// Check if we are on Pantheon hosting environment.
 		if ( defined( 'PANTHEON_ENVIRONMENT' ) ) {
@@ -82,6 +84,7 @@ class WPCFM_Core {
 		}
 
 		define( 'WPCFM_CONFIG_DIR', apply_filters( 'wpcfm_config_dir', $config_dir ) );
+		define( 'WPCFM_OVERRIDES_DIR', apply_filters( 'wpcfm_overrides_dir', $overrides_dir) );
 		define( 'WPCFM_CONFIG_URL', apply_filters( 'wpcfm_config_url', $config_url ) );
 		if ( PHP_VERSION_ID < 50604 ) {
 			define( 'WPCFM_CONFIG_FORMAT', 'json' );
@@ -174,7 +177,7 @@ class WPCFM_Core {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 
 		// includes
-		foreach ( array( 'options', 'readwrite', 'registry', 'helper', 'ajax' ) as $class ) {
+		foreach ( array( 'options', 'readwrite', 'readwrite-overrides', 'registry', 'helper', 'ajax' ) as $class ) {
 			include WPCFM_DIR . "/includes/class-$class.php";
 		}
 
@@ -185,6 +188,7 @@ class WPCFM_Core {
 
 		$this->options = new WPCFM_Options();
 		$this->readwrite = new WPCFM_Readwrite();
+		$this->readwrite_overrides = new WPCFM_ReadWriteOverrides();
 		$this->registry = new WPCFM_Registry();
 		$this->helper = new WPCFM_Helper();
 		$ajax = new WPCFM_Ajax();

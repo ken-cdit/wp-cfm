@@ -70,6 +70,47 @@ class WPCFM_CLI_Command extends WP_CLI_Command {
 	}
 
 	/**
+	 * Pull bundle overrides into the database.
+	 *
+	 * ## OPTIONS
+	 *
+	 * <bundle_name>
+	 * : The bundle name to import (or use "all")
+	 *
+	 * ## EXAMPLES
+	 *
+	 * wp config pull-overrides bundle_name
+	 *
+	 * @synopsis <bundle_name> [--network]
+	 */
+	function pull_overrides( $args, $assoc_args ) {
+		if( WPCFM_OVERRIDES_DIR === false ) {
+			WP_CLI::warning('Skipping because overrides are disabled (overrides directory is FALSE).');
+		}
+		else {
+			WP_CLI::debug('Processing overrides from directory: ' . WPCFM_OVERRIDES_DIR);
+			if( ! is_dir( WPCFM_OVERRIDES_DIR ) ) {
+				WP_CLI::warning('Overrides directory is configured but does not exist.');
+			}
+		}
+
+		if ( isset( $assoc_args['network'] ) ) {
+			WPCFM()->options->is_network = true;
+		}
+
+		$bundle_name = $args[0] ?: 'all';
+
+		if ( 'all' != $bundle_name ) {
+			if ( ! in_array( $bundle_name, WPCFM()->helper->get_bundle_names() ) ) {
+				WP_CLI::error( "Bundle file for `$bundle_name` cannot be found." );
+			}
+		}
+
+		WPCFM()->readwrite_overrides->pull_bundle( $bundle_name );
+		WP_CLI::success( 'Any bundle overrides found have been pulled into the database.' );
+	}
+
+	/**
 	 * Compare bundle differences
 	 *
 	 * ## OPTIONS
