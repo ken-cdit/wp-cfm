@@ -240,9 +240,13 @@ class WPCFM_Core {
 	private function register_admin_notices() {
 		$add_notice = function($message, $type) {
 			add_action( 'admin_notices', function() use ($message, $type) {
-				echo '<div class="notice notice-' . $type . '"><p>' . $message . '</p></div>';
+				echo '<div class="notice notice-' . $type . '"><p><b>WP-CFM</b>: ' . $message . '</p></div>';
 			} );
 		};
+
+		if ( ! ( 'options-general.php' === $GLOBALS['pagenow'] && $_REQUEST['page'] == 'wpcfm' ) ) {
+			return;
+		}
 
 		// check read/write errors
 		if ( ! empty( $this->readwrite->error) ) {
