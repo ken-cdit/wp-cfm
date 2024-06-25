@@ -96,6 +96,7 @@ class WPCFM_Core {
 		define( 'WPCFM_URL', plugins_url( '', __FILE__ ) );
 
 		define( 'WPCFM_DISABLE_PUSH', apply_filters( 'wpcfm_disable_push', false));
+		define( 'WPCFM_DISABLE_PULL', apply_filters( 'wpcfm_disable_pull', false));
 		define( 'WPCFM_HIDE_ATTRIBUTION', apply_filters( ' wpcfm_hide_attribution', false));
 		define( 'WPCFM_IGNORED_ITEMS', apply_filters( 'wpcfm_ignored_items', [] ));
 
@@ -248,8 +249,17 @@ class WPCFM_Core {
 			$add_notice($this->readwrite->error, 'error');
 		}
 
-		if( WPCFM_DISABLE_PUSH === true ) {
-			$add_notice("Push functionality is explicitly disabled for this environment.", 'info');
+		if( WPCFM_DISABLE_PULL === true && WPCFM_DISABLE_PUSH === true ) {
+			$add_notice("Push and pull functionalities are explicitly disabled for this environment.  You can still push and pull using the WordPress CLI.", 'info');
+		}
+		else {
+			if( WPCFM_DISABLE_PUSH === true ) {
+				$add_notice("Push functionality is explicitly disabled for this environment.  You can still push from the WordPress CLI.", 'info');
+			}
+
+			if( WPCFM_DISABLE_PULL === true ) {
+				$add_notice("Push functionality is explicitly disabled for this environment.  You can still pull from the WordPress CLI.", 'info');
+			}
 		}
 
 		if( defined('WPCFM_IGNORED_ITEMS') && ! empty( WPCFM_IGNORED_ITEMS )) {
@@ -385,6 +395,10 @@ class WPCFM_Core {
 
 	public function is_push_disabled() {
 		return WPCFM_DISABLE_PUSH;
+	}
+
+	public function is_pull_disabled() {
+		return WPCFM_DISABLE_PULL;
 	}
 
 	public function is_attribution_hidden() {

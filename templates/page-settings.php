@@ -44,7 +44,9 @@ $configuration = $this->helper->group_items( $configuration );
 				<?php if ( ! $this->is_push_disabled() ): ?>
 				<a class="button push-bundle" title="Write database changes to the filesystem"><?php _e( 'Push', 'wp-cfm' ); ?></a> &nbsp;
 				<?php endif ?>
+				<?php if ( ! $this->is_pull_disabled() ): ?>
 				<a class="button pull-bundle" title="Import file changes into the database"><?php _e( 'Pull', 'wp-cfm' ); ?></a>
+				<?php endif ?>
 			</div>
 			<div class="bundle-toggle">All Bundles</div>
 			<div class="clear"></div>
@@ -69,7 +71,9 @@ $configuration = $this->helper->group_items( $configuration );
 				<?php if ( ! $this->is_push_disabled() ): ?>
 				<a class="button push-bundle disabled" title="Write database changes to the filesystem"><?php _e( 'Push', 'wp-cfm' ); ?></a> &nbsp;
 				<?php endif ?>
+				<?php if ( ! $this->is_pull_disabled() ): ?>
 				<a class="button pull-bundle disabled" title="Import file changes into the database"><?php _e( 'Pull', 'wp-cfm' ); ?></a>
+				<?php endif ?>
 			</div>
 			<div class="bundle-toggle">New bundle</div>
 			<div class="clear"></div>
